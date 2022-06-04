@@ -135,26 +135,26 @@ def check_xor_decoding( out):
 
 def decipher_updater( offset, len, filename):
   out = xor_decode( offset, len)
-  print ' xor_decoding [0x%x-0x%x]...' % ( offset, offset+len),
+  print(' xor_decoding [0x%x-0x%x]...' % ( offset, offset+len), end=' ')
   if check_xor_decoding( out[0x10:] ):
-    print 'OK (%s)' % filename
+    print('OK (%s)' % filename)
     f = open(filename, 'wb')
     out.tofile(f)
     f.close()
   else:
-    print 'KO'
+    print('KO')
 
 def getData(firmware, offset, modelId):
   nFiles = getLongLE( m2, offset )
-  print '0x%03x: number of files in the pack = %d' % (offset+0x20, nFiles)
+  print('0x%03x: number of files in the pack = %d' % (offset+0x20, nFiles))
   tableOffset = getLongLE( m2, offset+4 )
-  print '0x%03x: offset to the file table = 0x%x (from 0x%x)' % (offset+0x20+4, tableOffset, firmware)
+  print('0x%03x: offset to the file table = 0x%x (from 0x%x)' % (offset+0x20+4, tableOffset, firmware))
   headerSize = getLongLE( m2, offset+8 )
-  print '0x%03x: header size = 0x%x (from 0x%x). end of header = 0x%x' % (offset+0x20+8, headerSize, firmware, firmware+headerSize)
+  print('0x%03x: header size = 0x%x (from 0x%x). end of header = 0x%x' % (offset+0x20+8, headerSize, firmware, firmware+headerSize))
   val = getLongLE( m2, offset+0xc )
-  print '0x%03x: size of file table = 0x%x ' % (offset+0x20+0xc, val)
+  print('0x%03x: size of file table = 0x%x ' % (offset+0x20+0xc, val))
   val = getLongLE( m2, offset+0x10 )
-  print '0x%03x: size after table = 0x%x' % (offset+0x20+0x10, val )
+  print('0x%03x: size after table = 0x%x' % (offset+0x20+0x10, val ))
   return nFiles, tableOffset, headerSize
 
 #see eos_tools_v11\400D_pack\eospack.c for the 'pack structure'
@@ -162,36 +162,36 @@ def getTable(firmware, modelId, offset, nFiles, headerSize, n):
   pOffset=0
   pLength=0
   if modelId==0x80000213: #5D
-    print '              +-flags-+-offset-+-length-+--name--------------------------+---??---'
+    print('              +-flags-+-offset-+-length-+--name--------------------------+---??---')
   else:
-    print '              +-flags-+-offset-+-length-+--name--------------------+'
+    print('              +-flags-+-offset-+-length-+--name--------------------+')
   for i in range(nFiles):
     flag = getLongLE( m2, offset )
-    print '0x%06x: 0x%02x 0x%04x ' % (offset+0x20, i+1, flag ),
+    print('0x%06x: 0x%02x 0x%04x ' % (offset+0x20, i+1, flag ), end=' ')
     offset = offset+4
     val = getLongLE( m2, offset )
     if i+1==n:
       pOffset = val
-    print '0x%06x' % (val ),
+    print('0x%06x' % (val ), end=' ')
     val = getLongLE( m2, offset+4 )
     if i+1==n:
       pLength = val
-    print '0x%06x' % (val ),
+    print('0x%06x' % (val ), end=' ')
     end  = m2[ offset+8: ].find("\0")
     if modelId == 0x80000213:
       if flag == 1:
-        print '%-32s' % ctypes.c_char_p(m2[ offset+8: offset+8+28]).value, #null terminated string
+        print('%-32s' % ctypes.c_char_p(m2[ offset+8: offset+8+28]).value, end=' ') #null terminated string
         val = getLongLE( m2, offset+36 )
-        print '0x%02x' % (val ),
+        print('0x%02x' % (val ), end=' ')
       else:
-        print '%-32s' % ctypes.c_char_p(m2[ offset+8: offset+8+32]).value, 
+        print('%-32s' % ctypes.c_char_p(m2[ offset+8: offset+8+32]).value, end=' ') 
       val = getLongLE( m2, offset+40 )
-      print '0x%06x' % (val )
+      print('0x%06x' % (val ))
       offset = offset + 44
     else:
-      print '%-32s' % ctypes.c_char_p(m2[ offset+8: offset+8+28]).value
+      print('%-32s' % ctypes.c_char_p(m2[ offset+8: offset+8+28]).value)
       offset = offset + 36
-  print '0x%06x: (+0x%x) end of table, first file' % (offset+0x20, headerSize)
+  print('0x%06x: (+0x%x) end of table, first file' % (offset+0x20, headerSize))
   return pOffset, pLength
     
 parser = OptionParser(usage="usage: %prog [options] filename")
@@ -205,20 +205,20 @@ m = f.read()
 fileLen = f.tell()
 f.close()
 
-print 'Fir_tool %s\n' % version_id
-print 'fileLen = 0x%x' % fileLen
-print '---.fir header---'
+print('Fir_tool %s\n' % version_id)
+print('fileLen = 0x%x' % fileLen)
+print('---.fir header---')
 modelId = getLongLE( m, 0 )
-print '0x000: modelId = 0x%08x,' % modelId,
+print('0x000: modelId = 0x%08x,' % modelId, end=' ')
 modelName = getModel( modelId )
 if (modelName!=None):
-  print '(%s, VxWorks)' % (modelName)
+  print('(%s, VxWorks)' % (modelName))
 else:
-  print 'not supported'
+  print('not supported')
   sys.exit()
-print '0x010: version = %s' % ( m[0x10:0x10+5] )
+print('0x010: version = %s' % ( m[0x10:0x10+5] ))
 
-print '---ciphered part (xor)---'
+print('---ciphered part (xor)---')
 
 prefix = '{0:04x}'.format(modelId & 0xffff) + "_" + m[0x10]+m[0x12]+m[0x14] 
 decipher_updater( 0x20, fileLen-0x20, prefix+'_firmware.bin')
@@ -228,46 +228,46 @@ m2 = f.read()
 f.close()
 
 fsum = getLongLE( m2, 0 )
-print '0x020: checksum = 0x%08x' %  fsum 
+print('0x020: checksum = 0x%08x' %  fsum) 
 if options.checksum:
   csum = sum( array.array('B', m[ 0:0x20 ]) ) + sum( array.array('B', m2[ 4:fileLen-4 ]) )
   if fsum != ctypes.c_uint32(~csum).value:
-    print " checksum error csum=0x%x" % (csum)
+    print(" checksum error csum=0x%x" % (csum))
   else:
-    print " checksum computing [0x%x-0x%x] is OK!" % (0x0 , fileLen)
+    print(" checksum computing [0x%x-0x%x] is OK!" % (0x0 , fileLen))
 
 updater1 = getLongLE( m2, 4 )
-print '0x024: updater offset = 0x%x' % ( updater1 )
+print('0x024: updater offset = 0x%x' % ( updater1 ))
 firmware = getLongLE( m2, 8 )
-print '0x028: firmware pack offset = 0x%x' % firmware
+print('0x028: firmware pack offset = 0x%x' % firmware)
 val = getLongLE( m, 0xc )
-print '0x02c:  = 0x%x' % val
-print '0x030: ---updater---'
+print('0x02c:  = 0x%x' % val)
+print('0x030: ---updater---')
 
-print '0x%03x: ---firmware---' % (firmware)
+print('0x%03x: ---firmware---' % (firmware))
 fsum2 = getLongLE( m2, firmware-0x20 )
-print '0x%03x: (+0x000) firmware checksum = 0x%x' % (firmware, fsum2)
+print('0x%03x: (+0x000) firmware checksum = 0x%x' % (firmware, fsum2))
 if options.checksum:
   csum = sum( array.array('B', m2[ firmware-0x20+4:fileLen-0x20 ]) )
   if fsum2 != ctypes.c_uint32(~csum).value:
-    print " checksum error csum=0x%x" % (csum)
+    print(" checksum error csum=0x%x" % (csum))
   else:
-    print " checksum computing [0x%x-0x%x] is OK!" % (firmware+4 , fileLen)
+    print(" checksum computing [0x%x-0x%x] is OK!" % (firmware+4 , fileLen))
 if modelId==0x80000213:
   val = getLongLE( m2, firmware-0x20+4 )
-  print '0x%03x: 0x%x (only with 5D)' % (firmware+4, val)
+  print('0x%03x: 0x%x (only with 5D)' % (firmware+4, val))
   nFiles, tableOffset, headerSize = getData(firmware, firmware-0x20+8, modelId)
   val = getLongLE( m2, firmware-0x20+tableOffset-4 )
-  print '0x%03x: 0x%x (only with 5D)' % (firmware-0x20+tableOffset-4, val) #dissect_fw2_d5.c is buggy on this!
+  print('0x%03x: 0x%x (only with 5D)' % (firmware-0x20+tableOffset-4, val)) #dissect_fw2_d5.c is buggy on this!
 else:
   nFiles, tableOffset, headerSize  = getData(firmware, firmware-0x20+4, modelId)
 
-print '0x%03x: (+0x%03x) files table' % (firmware-0x20+tableOffset, tableOffset)
+print('0x%03x: (+0x%03x) files table' % (firmware-0x20+tableOffset, tableOffset))
 pOffset, pLength = getTable(firmware, modelId, firmware-0x20+tableOffset, nFiles, headerSize, options.extract)
 
 if options.extract != -1 and pLength!=0:
   name = prefix+'_'+'{0:02x}'.format(options.extract)+'.bin'
-  print '\nwriting %s [0x%x-0x%x]. size=0x%x/%d' % (name, pOffset, pOffset+pLength, pLength, pLength)
+  print('\nwriting %s [0x%x-0x%x]. size=0x%x/%d' % (name, pOffset, pOffset+pLength, pLength, pLength))
   f = open(name, 'wb')
   f.write( m2[ firmware+pOffset-0x20: firmware+pOffset-0x20+pLength ] )
   f.close()

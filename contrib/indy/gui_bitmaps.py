@@ -73,18 +73,18 @@ assert len(palette) == 768
 #parses data directory
 nb_records = getLongLE(m, 0) 
 filesize = getLongLE(m, 4)
-print "nb_records=%d, filesize= 0x%08x" % (nb_records, filesize)
+print("nb_records=%d, filesize= 0x%08x" % (nb_records, filesize))
 for o in range(8, 8+nb_records*8, 8):
     offset = getLongLE(m, o)
     length = getLongLE(m, o+4)
     if o==8:
         bitmaps_offset = offset
-    print '0x%08x: 0x%08x 0x%08x' % (o , offset, length)
+    print('0x%08x: 0x%08x 0x%08x' % (o , offset, length))
 bitmaps_table= bitmaps_offset+4
 
-print
+print()
 nb = getLongLE(m, bitmaps_offset)
-print '0x%08x: nb_bitmaps = 0x%08x ' % (bitmaps_offset , nb)
+print('0x%08x: nb_bitmaps = 0x%08x ' % (bitmaps_offset , nb))
 
 prev = 0
 for o in range(bitmaps_table, bitmaps_table+nb*8, 8):
@@ -97,41 +97,41 @@ for o in range(bitmaps_table, bitmaps_table+nb*8, 8):
         delta = val2-prev
     else:
         delta = 0
-    print '0x%08x: 0x%08x 0x%08x delta=0x%04x, %3d %3d %d' % (o , val, val2+bitmaps_offset, delta, 
-        h, w, decomp, ),
+    print('0x%08x: 0x%08x 0x%08x delta=0x%04x, %3d %3d %d' % (o , val, val2+bitmaps_offset, delta, 
+        h, w, decomp, ), end=' ')
     filename = 'bitmap_'+'{0:08x}'.format(val)+'_'+'{0:d}'.format(w)+'x'+'{0:d}'.format(h)+'.bmp'
     if decomp==5:
         d = zlib.decompress(m[val2+bitmaps_offset +12:])
-        print '%04x %s' % ( getLongSE(m, val2+bitmaps_offset+8), hexlify(m[val2+bitmaps_offset+10:val2+bitmaps_offset+20]) ),
-        print len(d)
+        print('%04x %s' % ( getLongSE(m, val2+bitmaps_offset+8), hexlify(m[val2+bitmaps_offset+10:val2+bitmaps_offset+20]) ), end=' ')
+        print(len(d))
         im = Image.frombuffer('P',(w,h), d, 'raw', 'P', 0, 1)
         im.putpalette(palette)
         if options.extract:
             im.save(filename)
     elif decomp==7:
         d = zlib.decompress(m[val2+bitmaps_offset +12:])
-        print '%04x %s' % ( getLongSE(m, val2+bitmaps_offset+8), hexlify(m[val2+bitmaps_offset+10:val2+bitmaps_offset+20]) ),
-        print len(d)
+        print('%04x %s' % ( getLongSE(m, val2+bitmaps_offset+8), hexlify(m[val2+bitmaps_offset+10:val2+bitmaps_offset+20]) ), end=' ')
+        print(len(d))
         im = Image.frombuffer('1',(w,h), d, 'raw', '1', 0, 1)
         if options.extract:
             im.save(filename)
     elif decomp==2:
         d = rleDecompress2(val2+bitmaps_offset +8)
-        print hexlify(m[val2+bitmaps_offset+8:val2+bitmaps_offset+20]),   
-        print len(d)
+        print(hexlify(m[val2+bitmaps_offset+8:val2+bitmaps_offset+20]), end=' ')   
+        print(len(d))
         im = Image.frombuffer('P',(w,h), d, 'raw', 'P', 0, 1)
         im.putpalette(palette)
         if options.extract:
             im.save(filename)
     elif decomp==3:
         d = rleDecompress2(val2+bitmaps_offset +8)
-        print hexlify(m[val2+bitmaps_offset+8:val2+bitmaps_offset+20]),   
+        print(hexlify(m[val2+bitmaps_offset+8:val2+bitmaps_offset+20]), end=' ')   
         im = Image.frombuffer('P',(h,w), d, 'raw', 'P', 0, 1)
         if options.extract>0:
             im.save(filename)
-        print len(d)
+        print(len(d))
     elif decomp==0:   #no compression
-        print hexlify(m[val2+bitmaps_offset+8:val2+bitmaps_offset+20]),   
+        print(hexlify(m[val2+bitmaps_offset+8:val2+bitmaps_offset+20]), end=' ')   
         if w%8 != 0:
             w1=(w/8)+1
         else:
@@ -140,9 +140,9 @@ for o in range(bitmaps_table, bitmaps_table+nb*8, 8):
         im = Image.frombuffer('1',(w,h), d, 'raw', '1', 0, 1)
         if options.extract:
             im.save(filename)
-        print 8+(w1*h)
+        print(8+(w1*h))
     else:
-        print hexlify(m[val2+bitmaps_offset+8:val2+bitmaps_offset+20])   
+        print(hexlify(m[val2+bitmaps_offset+8:val2+bitmaps_offset+20]))   
     prev = val2
     
     

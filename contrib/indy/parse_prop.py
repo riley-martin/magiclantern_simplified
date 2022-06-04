@@ -18,16 +18,16 @@ else:
   base = 0
 
 i = base
-print 'filesize=%d' % len(m)
-print 'offset=%d/0x%x' % (base, base)
+print('filesize=%d' % len(m))
+print('offset=%d/0x%x' % (base, base))
 
 while (i+8) < len(m):
   prop = getLongLE(m, i)
   length = getLongLE(m, i+4)
   val = m[i+8: i+8+length]
   if length > 128:
-     print '0x%05x: 0x%08x, %4d, %s...' % ( i, prop, length, hexlify(val[0:128]) )
+     print('0x%05x: 0x%08x, %4d, %s...' % ( i, prop, length, hexlify(val[0:128]) ))
   else:
-     print '0x%05x: 0x%08x, %4d, %s' % ( i, prop, length, hexlify(val) )
+     print('0x%05x: 0x%08x, %4d, %s' % ( i, prop, length, hexlify(val) ))
   i = i + length+8
   

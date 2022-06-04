@@ -52,20 +52,20 @@ f.close()
 
 currentAddress = 0
 
-print 'Dump Canon SRec, v0.5'
-print
+print('Dump Canon SRec, v0.5')
+print()
 
 while currentAddress < size:
 
    rtype = getByteLE(m, currentAddress) #S0
-   if rtype <> 0:
-     print 'error rtype<>0'   
+   if rtype != 0:
+     print('error rtype<>0')   
    offset = currentAddress+1
    rlen = getByteLE(m, currentAddress+1)
    #Extract filename
    fileNameLen =  rlen - 3
    if options.verbose:
-     print "0x%06x: %02x %02x %04x" % ( currentAddress, rtype, rlen, getShortBE(m, currentAddress+2) ),
+     print("0x%06x: %02x %02x %04x" % ( currentAddress, rtype, rlen, getShortBE(m, currentAddress+2) ), end=' ')
 
    currentAddress += 4
 #   fileName = m[ currentAddress: currentAddress+fileNameLen ]
@@ -73,18 +73,18 @@ while currentAddress < size:
    while m[ i: i+1 ] in string.printable and i<(currentAddress+fileNameLen):
      i+=1 
    fileName = m[ currentAddress: i ]
-   print '%s' % fileName,
-   print '%d.%d.%d' % (ord(m[0x26]), ord(m[0x27]), ord(m[0x28]))
+   print('%s' % fileName, end=' ')
+   print('%d.%d.%d' % (ord(m[0x26]), ord(m[0x27]), ord(m[0x28])))
 
    fileLen = 0
    
    csum = sum( array.array('B', m[ currentAddress-3:  currentAddress+fileNameLen ]) )
    if options.verbose:
-     print '%02x' % ( ctypes.c_uint32(~csum).value & 0xff ),
+     print('%02x' % ( ctypes.c_uint32(~csum).value & 0xff ), end=' ')
    currentAddress += fileNameLen
    rsum = getByteLE(m, currentAddress)
    if options.verbose:
-     print '%02x' % ( rsum )
+     print('%02x' % ( rsum ))
    currentAddress += 1
    if options.convert: #prepare S0 record in S19 record
      dataS0 = hexlify(m[offset:offset+rlen+1])
@@ -116,7 +116,7 @@ while currentAddress < size:
        endBlockFound = True
        endAddr = addr
      else:
-       print 'unsupported record type = %x' % rtype
+       print('unsupported record type = %x' % rtype)
      
      if startAddr <0:
        startAddr = addr 
@@ -133,7 +133,7 @@ while currentAddress < size:
 
      currentAddress += addrLen
      if options.verbose:
-       print ("0x%06x: %02x %02x %8x") % ( offset, rtype, rlen, addr),
+       print(("0x%06x: %02x %02x %8x") % ( offset, rtype, rlen, addr), end=' ')
      data = m[currentAddress: currentAddress+dataLen]
      dataAscii = ''
      for c in data:
@@ -145,25 +145,25 @@ while currentAddress < size:
        f.write( data )
      fileLen += dataLen
      if options.verbose:
-       print "= %-32s %-32s" % ( hexlify( data ), dataAscii ),
+       print("= %-32s %-32s" % ( hexlify( data ), dataAscii ), end=' ')
      csum = sum( array.array('B', m[ offset+1:  currentAddress+dataLen ]) )
      csum = ctypes.c_uint32(~csum).value & 0xff
      if options.verbose:
-       print '%02x' % csum,
+       print('%02x' % csum, end=' ')
      currentAddress += dataLen
      rsum = getByteLE(m, currentAddress)
      if options.verbose:
        if rsum == csum:
-         print 'OK'
+         print('OK')
        else:
-         print 'KO'
+         print('KO')
      currentAddress += 1
   
    if options.convert: #write S0 record in S19 record
      fc.close()
    if options.extract:
      f.close()
-     print "%d bytes saved, " % fileLen,
+     print("%d bytes saved, " % fileLen, end=' ')
    else:
-     print "%d bytes, " % fileLen,
-   print "0x%x-0x%x" % (startAddr, endAddr)  
+     print("%d bytes, " % fileLen, end=' ')
+   print("0x%x-0x%x" % (startAddr, endAddr))  
