@@ -33,13 +33,13 @@ class LinuxIOManager(IOManager):
         return result
 
     def get_raw_device(self, drive_num):
-	volume = self.get_device_with_udi(drive_num)
+        volume = self.get_device_with_udi(drive_num)
         return volume.GetProperty('block.device')
 
     def get_label(self, drive_num):
-	volume = self.get_device_with_udi(drive_num)
+        volume = self.get_device_with_udi(drive_num)
         return volume.GetProperty('volume.label')
 
     def get_fs_type(self, drive_num):
-	volume = self.get_device_with_udi(drive_num)
+        volume = self.get_device_with_udi(drive_num)
         return volume.GetProperty('volume.fsversion')
