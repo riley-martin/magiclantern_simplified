@@ -17,8 +17,8 @@ def guesspitch(s):
     f = fftfreq(len(s))
     for i in range(100): F[i] = 0    
     a = argmax(F[:10000])
-    print a
-    print 1/f[a]
+    print(a)
+    print(1/f[a])
 
 def readsampled(file):
     f = open(file)
@@ -43,12 +43,12 @@ def readseg(file, start, size):
 
 def img(s,i,off,step,name,signed,pitch):
     nl = len(s)/pitch
-    print nl
+    print(nl)
     s = s[off:]
     a = resize(s,nl*pitch).reshape(nl,pitch)
     a = a[:,0:pitch:step]
     fname = '%03d-%s.png' % (i,name)
-    print a.min(), a.max()
+    print(a.min(), a.max())
     if signed: a = (a.astype(uint8).astype(int32) + 128).astype(uint8)
     else: a = a.astype(uint8)
     b = Image.fromarray(a)
