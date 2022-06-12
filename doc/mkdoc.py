@@ -35,7 +35,7 @@ def fixwikilinks(file):
         m = re.search(r"\[\[([^]|]+)([^]]*)\]\]", txt, re.MULTILINE)
         if not m: break
         origstr = "[[" + m.groups()[0] + m.groups()[1] + "]]"
-        print origstr
+        print(origstr)
         x = m.groups()[0]
         if 'Image:' in origstr:
             txt = txt.replace(origstr, "")
@@ -87,10 +87,10 @@ m = open("MANUAL.txt").readlines();
 c = open("CONFIG.txt").readlines();
 
 o = open("userguide.rst", "w")
-print >> o, """Magic Lantern v2.3 -- User's Guide
+print("""Magic Lantern v2.3 -- User's Guide
 ====================================================
 
-"""
+""", file=o)
 include(o, "FEATURES.txt");
 include(o, "MANUAL.txt", 1);
 include(o, "MENUSTART.txt");

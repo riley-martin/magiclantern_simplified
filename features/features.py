@@ -64,30 +64,30 @@ menus.append("Other")
 for mn in menus:
     if MN_COUNT.get(mn,0) == 0:
         continue
-    print ""
-    print mn
-    print ""
-    print "%30s" % "",
+    print("")
+    print(mn)
+    print("")
+    print("%30s" % "", end="")
     for c in cams:
-        print "%5s" % cam_shortname(c),
-    print ""
+        print("%5s" % cam_shortname(c), end="")
+    print("")
 
     for f in AF:
         if MN_DICT.get(f[8:], "Other") != mn:
             continue
-        print "%30s" % f[:30],
+        print("%30s" % f[:30], end="")
         for c in cams:
             if FD.get((c,f)):
-                print "  *  ",
+                print("  *  ", end="")
             else:
-                print "     ",
-        print ""
+                print("     ", end="")
+        print("")
 
-print ""
-print "Total"
-print ""
+print("")
+print("Total")
+print("")
 
-print "%30s" % "",
+print("%30s" % "", end="")
 for c in cams:
-    print ("%d" % (100 * N[c] / len(AF))).center(5),
-print ""
+    print(("%d" % (100 * N[c] / len(AF))).center(5), end="")
+print("")

@@ -86,7 +86,7 @@ def cleanup_stub(inp_file, out_file):
             name = name_raw.strip()
             
             if not check_used(name):
-                print "%s: unused" % name
+                print("%s: unused" % name)
                 if "???," not in l:
                     print >> out_file, comment_out(l)
                 continue
@@ -99,7 +99,7 @@ def cleanup_stub(inp_file, out_file):
                     addr = int(addr, 16)
                     l = l.lstrip('/ ')
                 except:
-                    print "%s: invalid address %s" % (name, addr)
+                    print("%s: invalid address %s" % (name, addr))
         
         print >> out_file, l
 
@@ -111,8 +111,8 @@ def cleanup_stub(inp_file, out_file):
 inputs = sys.argv[1:]
 
 if not inputs:
-    print "Usage: %s stubs1.S stubs2.S ..." % sys.argv[0]
-    print "   or: %s all" % sys.argv[0]
+    print("Usage: %s stubs1.S stubs2.S ..." % sys.argv[0])
+    print("   or: %s all" % sys.argv[0])
     raise SystemExit
 
 if inputs[0] == "all":
@@ -123,7 +123,7 @@ if inputs[0] == "all":
         if os.path.isfile(s):
             inputs.append(s)
 
-print "\n\nInput files:", inputs
+print("\n\nInput files:", inputs)
 
 for inp in inputs:
     cleanup_stub(inp, inp)      # use None for second argument to disable output

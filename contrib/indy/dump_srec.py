@@ -133,7 +133,7 @@ while currentAddress < size:
 
      currentAddress += addrLen
      if options.verbose:
-       print(("0x%06x: %02x %02x %8x") % ( offset, rtype, rlen, addr), end=' ')
+       print("0x%06x: %02x %02x %8x" % ( offset, rtype, rlen, addr), end=' ')
      data = m[currentAddress: currentAddress+dataLen]
      dataAscii = ''
      for c in data:

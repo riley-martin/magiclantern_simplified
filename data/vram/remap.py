@@ -22,7 +22,7 @@ import Image
 try:
     a = sys.argv[3]
 except:
-    print "Usage:\nremap.py image.jpg Palette.jpg mycrop.bmp"
+    print("Usage:\nremap.py image.jpg Palette.jpg mycrop.bmp")
     raise SystemExit
 
 def read_ch(f):
@@ -141,10 +141,10 @@ os.system("convert %s -type TrueColor -quality 100 tmp.png" % sys.argv[1])
 os.system("convert %s -type TrueColor -quality 100 pal.jpg" % sys.argv[2])
 M = read_rgb("pal.jpg")
 for i in range(3):
-    print M[:,:,i].astype(uint8)
+    print(M[:,:,i].astype(uint8))
 im = flipud(imread("tmp.png"))
 if im.max() <= 1: im *= 255
-print im.min(), im.max()
+print(im.min(), im.max())
 imr = remap_rgb(im,M)
 #print imr
 #save_img(imr,M,"pal.bmp")

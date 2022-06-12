@@ -18,10 +18,10 @@ from mkdoc_utils import sed_sub_tex_spec_chars
 rst2latex = os.getenv("RST2LATEX", "rst2latex.py")
 
 o = open("userguide.rst", "w")
-print >> o, """Magic Lantern v2.3
+print("""Magic Lantern v2.3
 ==================================
 
-"""
+""", file=o)
 include(o, "MANUAL.txt", 1);
 include(o, "MN-AUDIO.txt");
 include(o, "MN-EXPO.txt");
@@ -57,7 +57,7 @@ def fixwikilinks(file):
         m = re.search(r"\[\[([^]|]+)([^]]*)\]\]", txt, re.MULTILINE)
         if not m: break
         origstr = "[[" + m.groups()[0] + m.groups()[1] + "]]"
-        print origstr
+        print(origstr)
         x = m.groups()[0]
         x = x.replace("_", " ")
         txt = txt.replace(origstr, "`%s <http://magiclantern.wikia.com/wiki/%s>`_" % (x, urllib.quote(x)))
@@ -175,7 +175,7 @@ os.system("rm cam/*")
 os.system("mkdir cam")
 execfile("menuindex.py")
 
-print 'pdf to png...'
+print('pdf to png...')
 system_or_exit("pdftoppm -r 152.2 -png UserGuide-cam.pdf cam/page")
 
 # from remap.py
@@ -254,18 +254,18 @@ def save_img(im,M,file):
 
 M = read_rgb("../data/vram/Palette.jpg")
 for i in range(3):
-    print M[:,:,i].astype(uint8)
+    print(M[:,:,i].astype(uint8))
 
 def convert_page(k):
     png = "cam/page-%03d.png" % k
     if not os.path.isfile(png): png = "cam/page-%02d.png" % k
     if not os.path.isfile(png):
-        print "done?"
+        print("done?")
         raise SystemExit
     bmp = "cam/page-%03d.bmp" % k
     bmh = "cam/page-%03d.bmh" % k
 
-    print "remapping %s..." % png
+    print("remapping %s..." % png)
     im = flipud(imread(png))
     if im.max() <= 1: im *= 255
     imr = remap_rgb(im,M)

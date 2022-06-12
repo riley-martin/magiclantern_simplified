@@ -115,9 +115,9 @@ def saveFont(m, data_size, name, width, unknown):
     with open(file_name, "wb") as font_file:
       font_file.write(font_data)
 
-    print(("Saved as {}".format(file_name)))
+    print("Saved as {}".format(file_name))
   except Exception(E):
-    print(("Exception during save: {}".format(str(e))))
+    print("Exception during save: {}".format(str(e)))
 
 def getLongLE(d, a):
   return unpack('<L',(d)[a:a+4])[0]
@@ -126,26 +126,26 @@ def getShortLE(d, a):
   return unpack('<H',(d)[a:a+2])[0]
 
 def parseFont(m, off, base):
-  print(('0x%08x: %s' % (base+off, m[off:off+4] )))
+  print('0x%08x: %s' % (base+off, m[off:off+4] ))
   unknown_field = getShortLE(m, off+4)
-  print(('0x%08x: (+0x04) 0x%x' % ( base+off+4, unknown_field )))
+  print('0x%08x: (+0x04) 0x%x' % ( base+off+4, unknown_field ))
   font_width = getShortLE(m, off+6)
-  print(('0x%08x: (+0x06) font_width = %d' % ( base+off+6, font_width )))
+  print('0x%08x: (+0x06) font_width = %d' % ( base+off+6, font_width ))
   charmap_offset = getLongLE(m, off+8) 
-  print(('0x%08x: (+0x08) charmap_offset = 0x%x' % ( base+off+8, charmap_offset )))
+  print('0x%08x: (+0x08) charmap_offset = 0x%x' % ( base+off+8, charmap_offset ))
   charmap_size = getLongLE(m, off+12)
-  print(('0x%08x: (+0x0c) charmap_size = 0x%x' % ( base+off+12, charmap_size )))
+  print('0x%08x: (+0x0c) charmap_size = 0x%x' % ( base+off+12, charmap_size ))
   bitmap_size = getLongLE(m, off+16)
-  print(('0x%08x: (+0x10) bitmap_size = 0x%x' % ( base+off+16, bitmap_size )))
+  print('0x%08x: (+0x10) bitmap_size = 0x%x' % ( base+off+16, bitmap_size ))
   font_name = m[off+20: off+36]
-  print(('0x%08x: (+0x14) font name = \'%s\'' % ( base+off+20, font_name )))
+  print('0x%08x: (+0x14) font name = \'%s\'' % ( base+off+20, font_name ))
   nb_char = int(charmap_size/4)
-  print(('0x%08x: (+0x%02x) char_codes[]. %d chars' % ( base+off+charmap_offset, charmap_offset, nb_char )))
+  print('0x%08x: (+0x%02x) char_codes[]. %d chars' % ( base+off+charmap_offset, charmap_offset, nb_char ))
   last_offset = getLongLE(m, off + charmap_offset + charmap_size + (nb_char-1)*4 )
-  print(('0x%08x: (+0x%02x) offsets[]. Last offset value = 0x%x' % ( base+off+charmap_offset+charmap_size, charmap_offset+charmap_size, last_offset )))
+  print('0x%08x: (+0x%02x) offsets[]. Last offset value = 0x%x' % ( base+off+charmap_offset+charmap_size, charmap_offset+charmap_size, last_offset ))
   bitmap_offset = charmap_offset+charmap_size+nb_char*4
-  print(('0x%08x: (+0x%02x) bitmaps[]' % ( base+off+bitmap_offset, bitmap_offset  )))
-  print(('  0x%06x: (+0x%02x) last bitmap' % ( base+off+bitmap_offset+last_offset, bitmap_offset+last_offset  )))
+  print('0x%08x: (+0x%02x) bitmaps[]' % ( base+off+bitmap_offset, bitmap_offset  ))
+  print('  0x%06x: (+0x%02x) last bitmap' % ( base+off+bitmap_offset+last_offset, bitmap_offset+last_offset  ))
   parseBitmap( m, off+bitmap_offset+last_offset, base )
 
   if args.extract:
@@ -157,16 +157,16 @@ def parseFont(m, off, base):
 
 def parseBitmap(m, off, base):
   width = getShortLE(m, off)
-  print(('  +0x%02x: bitmap width = %d' % (0, width )))
+  print('  +0x%02x: bitmap width = %d' % (0, width ))
   height = getShortLE(m, off)
-  print(('  +0x%02x: bitmap height = %d' % (2, height )))
-  print(('  +0x%02x: char width = %d' % (4, getShortLE(m, off+4) )))
-  print(('  +0x%02x: X offset = %d' % (6, getShortLE(m, off+6) )))
-  print(('  +0x%02x: Y offset = %d' % (8, getShortLE(m, off+8) )))
+  print('  +0x%02x: bitmap height = %d' % (2, height ))
+  print('  +0x%02x: char width = %d' % (4, getShortLE(m, off+4)))
+  print('  +0x%02x: X offset = %d' % (6, getShortLE(m, off+6) ))
+  print('  +0x%02x: Y offset = %d' % (8, getShortLE(m, off+8) ))
   nb_byte = int(width/8)
   if width%8 > 0:
     nb_byte = nb_byte + 1
-  print(('    bitmap size = 0x%x' % ( nb_byte*height )))
+  print('    bitmap size = 0x%x' % ( nb_byte*height ))
 
 def guess_load_addr(rom, name):
   if rom[4:12] == "gaonisoy":
@@ -187,10 +187,10 @@ print('Arm.Indy. based on work by Pel, Trammel Hudson and A1ex')
 
 if (args.address):
   base = int(args.addres, 16)
-  print(('Using user-provided base address 0x%08x \n' % base))
+  print('Using user-provided base address 0x%08x \n' % base)
 else:
   base = guess_load_addr(m, args.file)
-  print(('Assumed that ROM file was dumped from 0x%08x \n' % base))
+  print('Assumed that ROM file was dumped from 0x%08x \n' % base)
 
 
 

@@ -101,7 +101,7 @@ def fix_labels_in_wiki():
     hw = h.split(" ")
     wl = w.split("\n")
     hl = h.split("\n")
-    print len(wl), len(hl)
+    print(len(wl), len(hl))
 
     P = []
     for i,line in enumerate(wl):
@@ -118,10 +118,10 @@ def fix_labels_in_wiki():
             #~ print Psmall
             try: m = difflib.get_close_matches(context, Psmall, n=1, cutoff=0.5)[0]
             except:
-                print context
+                print(context)
                 raise
             pos = len(P) - 1 - P[::-1].index(m) # lastindex
-            print labels, get_context(wl, pos, 50)
+            print(labels, get_context(wl, pos, 50))
             wl[pos] = add_labels(wl[pos], labels)
     f = open("userguide.wiki", "w")
     for l in wl:
@@ -139,7 +139,7 @@ def fix_eqns_in_wiki():
     hw = h.split(" ")
     wl = w.split("\n")
     hl = h.split("\n")
-    print len(wl), len(hl)
+    print(len(wl), len(hl))
 
     P = []
     for i,line in enumerate(wl):
@@ -150,7 +150,7 @@ def fix_eqns_in_wiki():
         eqn = find_eqn(line)
         if eqn:
             context = get_context(hl, i+1, 50)
-            print i,eqn, context
+            print(i,eqn, context)
             iwl = i * len(wl) / len(hl)
             #~ Psmall = P[max(iwl-300,0) : min(iwl+300, len(wl))]
             #~ print Psmall
@@ -161,7 +161,7 @@ def fix_eqns_in_wiki():
                 raise
             #~ pos = len(P) - 1 - P[::-1].index(m) # lastindex
             pos = P.index(m)
-            print eqn, get_context(wl, pos, 50)
+            print(eqn, get_context(wl, pos, 50))
             wl[pos] = add_eqn(wl[pos], eqn)
     f = open("userguide.wiki", "w")
     for l in wl:
